@@ -7,11 +7,11 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://jhonnypostgres:5432/microproductos_db
       SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: solocali123#
+      SPRING_DATASOURCE_PASSWORD:
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
     networks:
       - mi_red
 
 networks:
   mi_red:
-    external: true  # Si la red ya existe en Docker
+    external: true

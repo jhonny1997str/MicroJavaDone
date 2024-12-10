@@ -1,61 +1,54 @@
-// usuarios-service/src/main/java/com/usuarios_service/controller/UsuarioController.java
-
 package com.usuarios_service.controller;
 
-import com.usuarios_service.models.Usuario; // Importa la clase Usuario
-import com.usuarios_service.repository.UsuarioRepository; // Importa el repositorio para la clase Usuario
-import org.springframework.beans.factory.annotation.*; // Importa la anotación @Autowired
-import org.springframework.http.ResponseEntity; // Importa ResponseEntity para manejar respuestas HTTP
-import org.springframework.web.bind.annotation.*; // Importa las anotaciones para el manejo de solicitudes HTTP
+import com.usuarios_service.models.Usuario;
+import com.usuarios_service.repository.UsuarioRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List; // Importa la clase List
+import java.util.List;
 
-@RestController // Indica que esta clase es un controlador REST
-@RequestMapping("/api/usuarios") // Define el prefijo para todas las rutas en este controlador
+@RestController
+@RequestMapping("/api/usuarios")
 public class UsuarioController {
 
-    @Autowired // Inyección de dependencia; permite que Spring inyecte el UsuarioRepository
-    private UsuarioRepository usuarioRepository; // Declara el repositorio para interactuar con la base de datos
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
-    @GetMapping // Mapeo para la ruta GET "/api/usuarios"
+    @GetMapping
     public List<Usuario> getAllUsuarios() {
-        // Llama al método findAll del repositorio para obtener todos los usuarios
         return usuarioRepository.findAll();
     }
 
-    @PostMapping // Mapeo para la ruta POST "/api/usuarios"
+    @PostMapping
     public Usuario crearUsuario(@RequestBody Usuario usuario) {
-        // Guarda el usuario recibido en la base de datos y devuelve el usuario creado
         return usuarioRepository.save(usuario);
     }
 
-    @GetMapping("/{id}") // Mapeo para la ruta GET "/api/usuarios/{id}"
+    @GetMapping("/{id}")
     public ResponseEntity<Usuario> getUsuarioById(@PathVariable Long id) {
-        // Busca el usuario por ID; si lo encuentra, lo devuelve; de lo contrario, devuelve 404 Not Found
         return usuarioRepository.findById(id)
-                .map(usuario -> ResponseEntity.ok().body(usuario)) // Si el usuario existe, devuelve 200 OK y el usuario
-                .orElse(ResponseEntity.notFound().build()); // Si no, devuelve 404 Not Found
+                .map(usuario -> ResponseEntity.ok().body(usuario))
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/{id}") // Mapeo para la ruta PUT "/api/usuarios/{id}"
+    @PutMapping("/{id}")
     public ResponseEntity<Usuario> actualizarUsuario(@PathVariable Long id, @RequestBody Usuario detallesUsuario) {
-        // Busca el usuario por ID; si lo encuentra, actualiza sus datos; de lo contrario, devuelve 404 Not Found
         return usuarioRepository.findById(id)
                 .map(usuario -> {
-                    usuario.setNombre(detallesUsuario.getNombre()); // Actualiza el nombre
-                    usuario.setEmail(detallesUsuario.getEmail()); // Actualiza el email
-                    Usuario actualizado = usuarioRepository.save(usuario); // Guarda los cambios en la base de datos
-                    return ResponseEntity.ok().body(actualizado); // Devuelve 200 OK con el usuario actualizado
-                }).orElse(ResponseEntity.notFound().build()); // Si no, devuelve 404 Not Found
+                    usuario.setNombre(detallesUsuario.getNombre());
+                    usuario.setEmail(detallesUsuario.getEmail());
+                    Usuario actualizado = usuarioRepository.save(usuario);
+                    return ResponseEntity.ok().body(actualizado);
+                }).orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}") // Mapeo para la ruta DELETE "/api/usuarios/{id}"
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> eliminarUsuario(@PathVariable Long id) {
-        // Busca el usuario por ID; si lo encuentra, lo elimina; de lo contrario, devuelve 404 Not Found
         return usuarioRepository.findById(id)
                 .map(usuario -> {
-                    usuarioRepository.delete(usuario); // Elimina el usuario de la base de datos
-                    return ResponseEntity.ok().build(); // Devuelve 200 OK
-                }).orElse(ResponseEntity.notFound().build()); // Si no, devuelve 404 Not Found
+                    usuarioRepository.delete(usuario);
+                    return ResponseEntity.ok().build();
+                }).orElse(ResponseEntity.notFound().build());
     }
 }
